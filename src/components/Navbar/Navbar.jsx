@@ -10,13 +10,20 @@ import {
 } from "@mui/material";
 import { ShoppingCart } from "@mui/icons-material";
 import styles from "./Navbar.module.css";
+import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ cart }) => {
   return (
     <>
       <AppBar position="fixed" className={styles.appBar} color="inherit">
         <Toolbar>
-          <Typography variant="h6" className={styles.title} color="inherit">
+          <Typography
+            component={Link}
+            to="./"
+            variant="h6"
+            className={styles.title}
+            color="inherit"
+          >
             <img
               src="https://www.nicepng.com/png/full/247-2475175_ecommerce-e-commerce-website-logo.png"
               alt="Online Market"
@@ -27,8 +34,13 @@ const Navbar = () => {
           </Typography>
           <div className={styles.grow} />
           <div className={styles.button}>
-            <IconButton color="inherit" aria-label="show cart items">
-              <Badge badgeContent={4} color="secondary">
+            <IconButton
+              component={Link}
+              to="./cart"
+              color="inherit"
+              aria-label="show cart items"
+            >
+              <Badge badgeContent={cart.total_items} color="secondary">
                 <ShoppingCart />
               </Badge>
             </IconButton>

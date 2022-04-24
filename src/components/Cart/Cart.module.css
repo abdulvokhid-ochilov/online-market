@@ -1,0 +1,21 @@
+.cart {
+  padding: 100px 50px;
+}
+.cardDetails {
+  display: flex;
+  margin-top: 10%;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.cardButtons {
+  display: flex;
+  width: 40%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.button {
+  width: 150px;
+  margin-top: 10px;
+}
