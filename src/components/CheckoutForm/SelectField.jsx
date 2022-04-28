@@ -6,9 +6,9 @@ const SelectField = ({ options, changeHandler, label, value }) => {
     <Grid item xs={12} sm={6}>
       <InputLabel>{label}</InputLabel>
       <Select value={value} fullWidth onChange={changeHandler}>
-        {options.map((option) => (
-          <MenuItem key={option} value={option.value}>
-            {option}
+        {options.map(({ id, label }) => (
+          <MenuItem key={id} value={id}>
+            {label}
           </MenuItem>
         ))}
       </Select>
