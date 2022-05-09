@@ -15,19 +15,36 @@ import AddressForm from "../AddressForm/AddressForm";
 import PaymentForm from "../PaymentForm/PaymentForm";
 import Confirmation from "../Confirmation/Confirmation";
 import { commerce } from "../../../lib/commerce";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 const steps = ["Shipping", "Payment"];
+
+const STRIPE_PK = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 
 const Checkout = ({ cart }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [checkoutToken, setCheckoutToken] = useState(null);
   const [shippingData, setShippingData] = useState({});
 
+  const [pk, setPk] = useState();
+  const [stripePromise, setStripePromise] = useState(null);
+
+  useEffect(() => {
+    if (pk && !stripePromise) {
+      console.log("loadStripe");
+
+      setStripePromise(loadStripe(pk));
+    }
+  }, [pk, stripePromise]);
+
   const Form = () =>
     activeStep === 0 ? (
       <AddressForm checkoutToken={checkoutToken} handleNext={handleNext} />
     ) : (
-      <PaymentForm checkoutToken={checkoutToken} />
+      <Elements stripe={stripePromise}>
+        <PaymentForm checkoutToken={checkoutToken} prevStep={prevStep} />
+      </Elements>
     );
 
   const nextStep = () => {
@@ -40,6 +57,7 @@ const Checkout = ({ cart }) => {
   const handleNext = (data) => {
     setShippingData(data);
     nextStep();
+    setPk(STRIPE_PK);
   };
 
   useEffect(() => {

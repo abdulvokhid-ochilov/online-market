@@ -67,7 +67,7 @@ const AddressForm = ({ checkoutToken, handleNext }) => {
 
   useEffect(() => {
     getCountries(checkoutToken.id);
-  }, [checkoutToken]);
+  }, []);
 
   useEffect(() => {
     if (country) getStates(country);
