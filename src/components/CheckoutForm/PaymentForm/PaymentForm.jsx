@@ -4,9 +4,39 @@ import { CardElement } from "@stripe/react-stripe-js";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import Review from "../Review/Review";
 
-const PaymentForm = ({ checkoutToken, prevStep }) => {
+const PaymentForm = ({ checkoutToken, prevStep, shippingData }) => {
   const stripe = useStripe();
   const elements = useElements();
+
+  console.log(shippingData);
+
+  const handleSubmit = async (event, elements, stripe) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card: cardElement,
+    });
+
+    if (error) {
+      console.log(error);
+    } else {
+      const orderData = {
+        line_items: checkoutToken.live.line_items,
+        customer: {
+          firstname: shippingData.firstName,
+          lastname: shippingData.lastName,
+          email: shippingData.email,
+        },
+      };
+    }
+  };
 
   return (
     <>

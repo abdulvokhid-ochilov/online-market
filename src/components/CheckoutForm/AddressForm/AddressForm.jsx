@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { useForm, FormProvider } from "react-hook-form";
-import InputField from "../InputField";
+import { Button, Grid, Typography, TextField } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
 import { commerce } from "../../../lib/commerce";
 import SelectField from "../SelectField";
 import { Link } from "react-router-dom";
@@ -20,7 +12,8 @@ const AddressForm = ({ checkoutToken, handleNext }) => {
   const [state, setState] = useState("");
   const [options, setOptions] = useState([]);
   const [option, setOption] = useState("");
-  const methods = useForm();
+
+  const { control, handleSubmit } = useForm();
 
   const getCountries = async (id) => {
     const { countries } = await commerce.services.localeListShippingCountries(
@@ -82,51 +75,172 @@ const AddressForm = ({ checkoutToken, handleNext }) => {
       <Typography variant="h6" gutterBottom>
         Shipping Address
       </Typography>
-      <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit((data) => {
-            handleNext({ ...data, country, state, option });
-          })}
-        >
-          <Grid container spacing={3}>
-            <InputField name="firstName" label="First Name" />
-            <InputField name="lastName" label="Last Name" />
-            <InputField name="address1" label="Address" />
-            <InputField name="email" label="Email" />
-            <InputField name="city" label="City" />
-            <InputField name="zip" label="ZIP/Postal code" />
-            <SelectField
-              options={countries}
-              label="Shipping Country"
-              value={country}
-              changeHandler={(e) => {
-                setCountry(e.target.value);
-              }}
-            />
-            <SelectField
-              options={states}
-              label="Shipping Subdivision"
-              value={state}
-              changeHandler={(e) => setState(e.target.value)}
-            />
-            <SelectField
-              options={options}
-              label="Shipping Option"
-              value={option}
-              changeHandler={(e) => setOption(e.target.value)}
+
+      <form
+        onSubmit={handleSubmit((data) =>
+          handleNext({ ...data, country, state, option })
+        )}
+      >
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="firstName"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  fullWidth
+                  label="First Name"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
+              rules={{ required: `First Name is required` }}
             />
           </Grid>
-          <br />
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Button component={Link} to="/cart" variant="outlined">
-              Back to Cart
-            </Button>
-            <Button type="submit" variant="contained" color="primary">
-              Next
-            </Button>
-          </div>
-        </form>
-      </FormProvider>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="lastName"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  fullWidth
+                  label="Last Name"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
+              rules={{ required: `Last Name is required` }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="address1"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  fullWidth
+                  label="Address"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
+              rules={{ required: `Address is required` }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="email"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  fullWidth
+                  label="Email"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  type="email"
+                />
+              )}
+              rules={{ required: `Email is required` }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="city"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  fullWidth
+                  label="City"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
+              rules={{ required: `City is required` }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="zip"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  fullWidth
+                  label="ZIP/Postal code"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
+              rules={{ required: `ZIP/Postal code is required` }}
+            />
+          </Grid>
+
+          <SelectField
+            options={countries}
+            label="Shipping Country"
+            value={country}
+            changeHandler={(e) => {
+              setCountry(e.target.value);
+            }}
+          />
+          <SelectField
+            options={states}
+            label="Shipping Subdivision"
+            value={state}
+            changeHandler={(e) => setState(e.target.value)}
+          />
+          <SelectField
+            options={options}
+            label="Shipping Option"
+            value={option}
+            changeHandler={(e) => setOption(e.target.value)}
+          />
+        </Grid>
+        <br />
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button component={Link} to="/cart" variant="outlined">
+            Back to Cart
+          </Button>
+          <Button type="submit" variant="contained" color="primary">
+            Next
+          </Button>
+        </div>
+      </form>
     </>
   );
 };

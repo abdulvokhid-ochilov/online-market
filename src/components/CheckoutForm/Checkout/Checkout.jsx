@@ -43,7 +43,11 @@ const Checkout = ({ cart }) => {
       <AddressForm checkoutToken={checkoutToken} handleNext={handleNext} />
     ) : (
       <Elements stripe={stripePromise}>
-        <PaymentForm checkoutToken={checkoutToken} prevStep={prevStep} />
+        <PaymentForm
+          checkoutToken={checkoutToken}
+          prevStep={prevStep}
+          shippingData={shippingData}
+        />
       </Elements>
     );
 
@@ -55,6 +59,7 @@ const Checkout = ({ cart }) => {
   };
 
   const handleNext = (data) => {
+    console.log(data);
     setShippingData(data);
     nextStep();
     setPk(STRIPE_PK);
