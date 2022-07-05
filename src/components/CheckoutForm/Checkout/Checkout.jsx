@@ -22,7 +22,7 @@ const steps = ["Shipping", "Payment"];
 
 const STRIPE_PK = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 
-const Checkout = ({ cart }) => {
+const Checkout = ({ cart, error, order, onCaptureCheckout }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [checkoutToken, setCheckoutToken] = useState(null);
   const [shippingData, setShippingData] = useState({});
@@ -47,6 +47,8 @@ const Checkout = ({ cart }) => {
           checkoutToken={checkoutToken}
           prevStep={prevStep}
           shippingData={shippingData}
+          onCaptureCheckout={onCaptureCheckout}
+          nextStep={nextStep}
         />
       </Elements>
     );

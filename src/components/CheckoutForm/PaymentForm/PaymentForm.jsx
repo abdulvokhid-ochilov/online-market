@@ -4,7 +4,13 @@ import { CardElement } from "@stripe/react-stripe-js";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import Review from "../Review/Review";
 
-const PaymentForm = ({ checkoutToken, prevStep, shippingData }) => {
+const PaymentForm = ({
+  checkoutToken,
+  prevStep,
+  shippingData,
+  onCaptureCheckout,
+  nextStep,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -14,6 +20,7 @@ const PaymentForm = ({ checkoutToken, prevStep, shippingData }) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
+      console.log("Stripe or elements are not loaded yet");
       return;
     }
 
@@ -34,7 +41,27 @@ const PaymentForm = ({ checkoutToken, prevStep, shippingData }) => {
           lastname: shippingData.lastName,
           email: shippingData.email,
         },
+        shipping: {
+          name: "Primary",
+          street: shippingData.address1,
+          town_city: shippingData.city,
+          county_state: shippingData.state,
+          postal_zip_code: shippingData.zip,
+          country: shippingData.country,
+        },
+        fulfillment: {
+          shipping_method: shippingData.option,
+        },
+        payment: {
+          gateway: "stripe",
+          stripe: {
+            payment_method_id: paymentMethod.id,
+          },
+        },
       };
+
+      onCaptureCheckout(checkoutToken.id, orderData);
+      nextStep();
     }
   };
 
@@ -46,7 +73,7 @@ const PaymentForm = ({ checkoutToken, prevStep, shippingData }) => {
         Payment method
       </Typography>
 
-      <form>
+      <form onSubmit={(e) => handleSubmit(e, elements, stripe)}>
         <CardElement id="card" style={{ width: "100%" }} />
         <br />
         <br />
@@ -55,6 +82,7 @@ const PaymentForm = ({ checkoutToken, prevStep, shippingData }) => {
             Back
           </Button>
           <Button
+            type="submit"
             variant="contained"
             color="primary"
             disabled={!stripe || !elements}
